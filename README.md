@@ -107,13 +107,4 @@ python Batch_testing.py --methods og_moe mfcl maosdan_shift --runs 5
 Reported metrics are H-score, OS*, UK and OS, printed per run and written to
 `logs/` together with t-SNE and confusion-matrix figures.
 
-## Scope of this snapshot
 
-This repository contains the model and training code only:
-
-- `datasets/` (the SDUST / RflyMAD / RflyMAD1 loaders) is not included.
-- `compare_model.py`, which holds the `main_maosdan` loop used by
-  `--method maosdan_shift`, is not included.
-
-Both are needed for an end-to-end run and should be added from the full
-codebase.
