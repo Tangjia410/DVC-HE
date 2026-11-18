@@ -7,37 +7,7 @@ DVC-HE combines a shared-backbone dual-expert architecture with an
 openness-aware gated fusion, so that a single checkpoint can classify known
 fault types and reject unknown ones on an unlabelled target domain.
 
-## Method
 
-| Component | Implementation | Objective |
-|---|---|---|
-| Backbone | 1-D CNN (`models/digits.py`), shared by both experts when `--og-shared 1` | — |
-| Expert A | `alignment/osbp.py::ImageClassifier` | full MFCL: `SCE + ESL + CSL + 0.5 * (CTL + PRT + ADV)` |
-| Expert B | `models/MAOSDAN_shift.py::MAOSDAN_Shift` | `cls + trans + shift` (reliability-weighted bidirectional decision-boundary correction) |
-| Gate | MLP over `[p_A, p_B, H(p_A), H(p_B), max p_A, max p_B, pi_u]` | `g` in `(0, 1)` |
-| Fusion | `p = g * p_A + (1 - g) * p_B` | — |
-
-`pi_u` is the openness prior, computed from the source and target class counts.
-
-Baselines kept in the same code path:
-
-- `mfcl` — Expert A alone, the closed/open-set baseline.
-- `maosdan_shift` — Expert B alone.
-- `og_moe` — the full DVC-HE model.
-
-## Repository layout
-
-```
-DVC-HE.py            command-line entry point
-trainer.py           method dispatch, MFCL training loop, evaluation
-og_moe_trainer.py    end-to-end training of the gated dual-expert model
-Batch_testing.py     multi-seed / multi-condition batch runner
-alignment/           backbone classifier, OSBP losses (SCE/ESL/CSL/CTL/PRT/ADV)
-models/              LeNet backbone, MAOSDAN-Shift expert, DVC-HE model
-modules/             domain discriminator, gradient reversal layer, heads
-utils/               data iterators, metrics (H-score / OS* / UK / OS), plots
-scripts/             single-seed sweep, per-expert diagnostics
-```
 
 ## Requirements
 
